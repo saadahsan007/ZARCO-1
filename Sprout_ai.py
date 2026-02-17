@@ -186,83 +186,40 @@ for msg in st.session_state.messages:
         st.markdown(msg["content"])
 
 # ---------------- CHAT INPUT ----------------
-import streamlit as st
-import os
-import time
-import random
-
-# ------------------- Initialize session state -------------------
-if "messages" not in st.session_state:
-    st.session_state.messages = []
-
-if "eye_state" not in st.session_state:
-    st.session_state.eye_state = "green"
-
-if "is_speaking" not in st.session_state:
-    st.session_state.is_speaking = False
-
-# ------------------- Safe API key -------------------
-API_KEY = os.environ.get("GENAI_API_KEY")
-import google.generativeai as genai
-genai.api_key = API_KEY
-
-# ------------------- Placeholders -------------------
-eye_placeholder = st.empty()            # Eye animation
-response_placeholder = st.empty()       # Streaming response
-
-# ------------------- Chat input -------------------
 if prompt := st.chat_input("Ask something..."):
 
-    # ------------------- User message -------------------
+    # 🔴 Eyes turn red when user asks
     st.session_state.eye_state = "red"
-    eye_placeholder.markdown("Eyes: 🔴")  # Red eyes
     st.session_state.messages.append({"role": "user", "content": prompt})
 
     with st.chat_message("user"):
-        st.markdown(
-            f'<div style="background-color:white; color:#1e3a8a; padding:10px; border-radius:8px;">{prompt}</div>',
-            unsafe_allow_html=True
-        )
+        st.markdown(prompt)
 
-    # ------------------- AI response -------------------
+    # 🟢 AI answering
     st.session_state.eye_state = "green"
     st.session_state.is_speaking = True
 
-    full_response = ""
     with st.chat_message("assistant"):
+        response_placeholder = st.empty()
+        full_response = ""
 
         try:
             response = model.generate_content(prompt, stream=True)
-
             for chunk in response:
                 if chunk.text:
                     full_response += chunk.text
-                    # Update AI response text
-                    response_placeholder.markdown(
-                        f'<div style="background-color:white; color:#1e3a8a; padding:10px; border-radius:8px;">{full_response} ▌</div>',
-                        unsafe_allow_html=True
-                    )
-                    # Animate eyes while streaming
-                    eye_state = random.choice(["🟢", "🔵"])  # green/blue variation for animation
-                    eye_placeholder.markdown(f"Eyes: {eye_state}")
+                    response_placeholder.markdown(full_response + " ▌")
+                    time.sleep(0.01)
 
-                    time.sleep(0.01)  # small delay for streaming
-
-            # Final response without cursor
-            response_placeholder.markdown(
-                f'<div style="background-color:white; color:#1e3a8a; padding:10px; border-radius:8px;">{full_response}</div>',
-                unsafe_allow_html=True
-            )
-            # Eyes back to solid green
-            eye_placeholder.markdown("Eyes: 🟢")
+            response_placeholder.markdown(full_response)
 
         except Exception as e:
             full_response = f"⚠️ Error: {str(e)}"
             response_placeholder.markdown(full_response)
 
     st.session_state.messages.append({"role": "assistant", "content": full_response})
-    st.session_state.is_speaking = False
 
+    st.session_state.is_speaking = False
 # ---------------- SHOW CUTE AI HUMAN ----------------
 if st.session_state.is_speaking:
     st.markdown("""
