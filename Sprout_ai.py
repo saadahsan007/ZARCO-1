@@ -199,23 +199,28 @@ for msg in st.session_state.messages:
         st.markdown(msg["content"])
 
 # ---------------- CHAT INPUT ----------------
+# ---------------- CHAT INPUT ----------------
+chat_placeholder = st.container()  # Container for all chat messages
+
 if prompt := st.chat_input("Ask something..."):
 
     # 🔴 Eyes turn red when user asks
     st.session_state.eye_state = "red"
     st.session_state.messages.append({"role": "user", "content": prompt})
 
-    with st.chat_message("user"):
-        st.markdown(prompt)
-
     # 🟢 AI answering
     st.session_state.eye_state = "green"
     st.session_state.is_speaking = True
 
-    with st.chat_message("assistant"):
+    with chat_placeholder:
+        # Display all messages
+        for msg in st.session_state.messages:
+            with st.chat_message(msg["role"]):
+                st.markdown(msg["content"])
+
+        # Generate AI response
         response_placeholder = st.empty()
         full_response = ""
-
         try:
             response = model.generate_content(prompt, stream=True)
             for chunk in response:
@@ -230,9 +235,11 @@ if prompt := st.chat_input("Ask something..."):
             full_response = f"⚠️ Error: {str(e)}"
             response_placeholder.markdown(full_response)
 
-    st.session_state.messages.append({"role": "assistant", "content": full_response})
+        st.session_state.messages.append({"role": "assistant", "content": full_response})
+        st.session_state.is_speaking = False
 
-    st.session_state.is_speaking = False
+    # Force auto-scroll
+    st.experimental_rerun()
 # ---------------- SHOW CUTE AI HUMAN ----------------
 if st.session_state.is_speaking:
     st.markdown("""
