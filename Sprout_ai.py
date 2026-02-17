@@ -24,33 +24,44 @@ if "is_speaking" not in st.session_state:
 st.markdown(
     """
     <style>
-    /* App background */
-    .stApp {
-        background: linear-gradient(135deg, #e8f5e9, #d0f0dc, #b9e4c9);
+    /* Force full app gradient background */
+    html, body, .stApp {
+        background: linear-gradient(135deg, #e8f5e9, #d0f0dc, #b9e4c9) !important;
         color: #1b4332;
         min-height: 100vh;
-        padding: 2rem;
+        margin: 0;
+        padding: 0;
     }
 
     h1, h2, h3, h4, h5, h6 {
-        color: #1b4332;
+        color: #1b4332 !important;
     }
 
     .stMarkdown {
-        background-color: white;
-        color: #1e3a8a;
+        background-color: white !important;
+        color: #1e3a8a !important;
         padding: 10px;
         border-radius: 8px;
     }
 
     /* Sidebar */
     [data-testid="stSidebar"] {
-        background: rgba(255,255,255,0.05);
+        background: rgba(255,255,255,0.05) !important;
         backdrop-filter: blur(15px);
         border-right: 1px solid rgba(255,255,255,0.1);
     }
 
-    /* Robot */
+    /* Chat messages */
+    [data-testid="stChatMessage"] {
+        background: rgba(255,255,255,0.05) !important;
+        border-radius: 14px;
+        padding: 10px;
+        margin-bottom: 10px;
+        backdrop-filter: blur(8px);
+        color: #1e3a8a !important;
+    }
+
+    /* Eyes, robot, titles, AI animations */
     .robot-container {
         display: flex;
         flex-direction: column;
@@ -93,7 +104,6 @@ st.markdown(
         95% { transform: scaleY(0.2); }
     }
 
-    /* Title */
     .main-title {
         text-align: center;
         font-size: 42px;
@@ -114,16 +124,6 @@ st.markdown(
         margin-bottom: 25px;
     }
 
-    /* Chat messages */
-    [data-testid="stChatMessage"] {
-        background: rgba(255,255,255,0.05);
-        border-radius: 14px;
-        padding: 10px;
-        margin-bottom: 10px;
-        backdrop-filter: blur(8px);
-    }
-
-    /* Cute AI Human */
     .ai-human {
         position: fixed;
         bottom: 40px;
