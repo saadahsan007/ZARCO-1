@@ -21,10 +21,12 @@ if "is_speaking" not in st.session_state:
     st.session_state.is_speaking = False
 
 # ---------------- STYLING ----------------
+import streamlit as st
+
 st.markdown(
     """
     <style>
-    /* Paste the CSS block here */
+    /* App background */
     .stApp {
         background: linear-gradient(135deg, #e8f5e9, #d0f0dc, #b9e4c9);
         color: #1b4332;
@@ -42,120 +44,116 @@ st.markdown(
         padding: 10px;
         border-radius: 8px;
     }
+
+    /* Sidebar */
+    [data-testid="stSidebar"] {
+        background: rgba(255,255,255,0.05);
+        backdrop-filter: blur(15px);
+        border-right: 1px solid rgba(255,255,255,0.1);
+    }
+
+    /* Robot */
+    .robot-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 20px;
+    }
+
+    .robot-head {
+        width: 95px;
+        height: 75px;
+        border-radius: 18px;
+        background: #ffc0cb;  /* Pink Face */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .eye-row { display: flex; gap: 20px; }
+
+    .eye {
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        animation: blink 3s infinite;
+        transition: 0.3s ease;
+    }
+
+    .eye-green {
+        background-color: #66bb6a;
+        box-shadow: 0 0 8px #66bb6a;
+    }
+
+    .eye-red {
+        background-color: #ef5350;
+        box-shadow: 0 0 8px #ef5350;
+    }
+
+    @keyframes blink {
+        0%, 92%, 100% { transform: scaleY(1); }
+        95% { transform: scaleY(0.2); }
+    }
+
+    /* Title */
+    .main-title {
+        text-align: center;
+        font-size: 42px;
+        font-weight: 600;
+        color: #ffeb3b;
+    }
+
+    .subtitle {
+        text-align: center;
+        font-size: 16px;
+        color: #0000ff;
+    }
+
+    .credit {
+        text-align: center;
+        font-size: 14px;
+        color: #a5d6a7;
+        margin-bottom: 25px;
+    }
+
+    /* Chat messages */
+    [data-testid="stChatMessage"] {
+        background: rgba(255,255,255,0.05);
+        border-radius: 14px;
+        padding: 10px;
+        margin-bottom: 10px;
+        backdrop-filter: blur(8px);
+    }
+
+    /* Cute AI Human */
+    .ai-human {
+        position: fixed;
+        bottom: 40px;
+        right: 40px;
+        width: 130px;
+        animation: floaty 3s ease-in-out infinite;
+        z-index: 999;
+    }
+
+    @keyframes floaty {
+        0% { transform: translateY(0px); }
+        50% { transform: translateY(-10px); }
+        100% { transform: translateY(0px); }
+    }
+
+    .talking {
+        filter: drop-shadow(0 0 10px #66bb6a);
+        animation: talkGlow 0.8s infinite alternate;
+    }
+
+    @keyframes talkGlow {
+        from { opacity: 0.8; }
+        to { opacity: 1; }
+    }
     </style>
     """,
-    unsafe_allow_html=True 
+    unsafe_allow_html=True
 )
-
-/* Sidebar */
-[data-testid="stSidebar"] {
-    background: rgba(255,255,255,0.05);
-    backdrop-filter: blur(15px);
-    border-right: 1px solid rgba(255,255,255,0.1);
-}
-
-/* Robot */
-.robot-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 20px;
-}
-
-.robot-head {
-    width: 95px;
-    height: 75px;
-    border-radius: 18px;
-    background: #ffc0cb;  /* Pink Face */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.eye-row { display: flex; gap: 20px; }
-
-.eye {
-    width: 18px;
-    height: 18px;
-    border-radius: 50%;
-    animation: blink 3s infinite;
-    transition: 0.3s ease;
-}
-
-.eye-green {
-    background-color: #66bb6a;
-    box-shadow: 0 0 8px #66bb6a;
-}
-
-.eye-red {
-    background-color: #ef5350;
-    box-shadow: 0 0 8px #ef5350;
-}
-
-@keyframes blink {
-    0%, 92%, 100% { transform: scaleY(1); }
-    95% { transform: scaleY(0.2); }
-}
-
-/* Title */
-.main-title {
-    text-align: center;
-    font-size: 42px;
-    font-weight: 600;
-    color: #ffeb3b;
-}
-
-.subtitle {
-    text-align: center;
-    font-size: 16px;
-    color: #0000ff;
-}
-
-.credit {
-    text-align: center;
-    font-size: 14px;
-    color: #a5d6a7;
-    margin-bottom: 25px;
-}
-
-/* Chat messages */
-[data-testid="stChatMessage"] {
-    background: rgba(255,255,255,0.05);
-    border-radius: 14px;
-    padding: 10px;
-    margin-bottom: 10px;
-    backdrop-filter: blur(8px);
-}
-
-/* Cute AI Human */
-.ai-human {
-    position: fixed;
-    bottom: 40px;
-    right: 40px;
-    width: 130px;
-    animation: floaty 3s ease-in-out infinite;
-    z-index: 999;
-}
-
-@keyframes floaty {
-    0% { transform: translateY(0px); }
-    50% { transform: translateY(-10px); }
-    100% { transform: translateY(0px); }
-}
-
-.talking {
-    filter: drop-shadow(0 0 10px #66bb6a);
-    animation: talkGlow 0.8s infinite alternate;
-}
-
-@keyframes talkGlow {
-    from { opacity: 0.8; }
-    to { opacity: 1; }
-}
-
-</style>
-""", unsafe_allow_html=True)
-
 # ---------------- SIDEBAR ----------------
 with st.sidebar:
 
