@@ -197,10 +197,8 @@ model = genai.GenerativeModel("gemini-2.5-flash")
 for msg in st.session_state.messages:
     with st.chat_message(msg["role"]):
         st.markdown(msg["content"])
-
 # ---------------- CHAT INPUT ----------------
-# ---------------- CHAT INPUT ----------------
-chat_placeholder = st.container()  # Container for all chat messages
+chat_container = st.container()  # Container for all chat messages
 
 if prompt := st.chat_input("Ask something..."):
 
@@ -212,34 +210,32 @@ if prompt := st.chat_input("Ask something..."):
     st.session_state.eye_state = "green"
     st.session_state.is_speaking = True
 
-    with chat_placeholder:
-        # Display all messages
+    # Use a placeholder to update chat messages dynamically
+    chat_placeholder = chat_container.empty()
+    full_response = ""
+
+    # Re-render all messages first (including the new user message)
+    with chat_placeholder.container():
         for msg in st.session_state.messages:
             with st.chat_message(msg["role"]):
                 st.markdown(msg["content"])
 
-        # Generate AI response
-        response_placeholder = st.empty()
-        full_response = ""
+        # Stream AI response
         try:
             response = model.generate_content(prompt, stream=True)
             for chunk in response:
                 if chunk.text:
                     full_response += chunk.text
-                    response_placeholder.markdown(full_response + " ▌")
+                    chat_placeholder.markdown(full_response + " ▌")
                     time.sleep(0.01)
 
-            response_placeholder.markdown(full_response)
-
+            chat_placeholder.markdown(full_response)
         except Exception as e:
             full_response = f"⚠️ Error: {str(e)}"
-            response_placeholder.markdown(full_response)
+            chat_placeholder.markdown(full_response)
 
         st.session_state.messages.append({"role": "assistant", "content": full_response})
         st.session_state.is_speaking = False
-
-    # Force auto-scroll
-    st.experimental_rerun()
 # ---------------- SHOW CUTE AI HUMAN ----------------
 if st.session_state.is_speaking:
     st.markdown("""
