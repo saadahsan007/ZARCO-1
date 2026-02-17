@@ -21,8 +21,6 @@ if "is_speaking" not in st.session_state:
     st.session_state.is_speaking = False
 
 # ---------------- STYLING ----------------
-import streamlit as st
-
 st.markdown(
     """
     <style>
