@@ -21,14 +21,31 @@ if "is_speaking" not in st.session_state:
     st.session_state.is_speaking = False
 
 # ---------------- STYLING ----------------
-st.markdown("""
-<style>
+st.markdown(
+    """
+    <style>
+    /* Paste the CSS block here */
+    .stApp {
+        background: linear-gradient(135deg, #e8f5e9, #d0f0dc, #b9e4c9);
+        color: #1b4332;
+        min-height: 100vh;
+        padding: 2rem;
+    }
 
-/* Background */
-.stApp {
-    background: linear-gradient(135deg, #e8f5e9, #d0f0dc, #b9e4c9);
-    color: #1b4332;
-}
+    h1, h2, h3, h4, h5, h6 {
+        color: #1b4332;
+    }
+
+    .stMarkdown {
+        background-color: white;
+        color: #1e3a8a;
+        padding: 10px;
+        border-radius: 8px;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True 
+} 
 
 /* Sidebar */
 [data-testid="stSidebar"] {
