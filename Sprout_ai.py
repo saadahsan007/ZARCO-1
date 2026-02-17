@@ -174,7 +174,7 @@ st.markdown("<div class='subtitle'>Calm. Intelligent. Refined.</div>", unsafe_al
 st.markdown("<div class='credit'>Developed by <b>Zainab Ahsan</b><br>Presented at <b>Superior Expo 2026</b></div>", unsafe_allow_html=True)
 
 # ---------------- API CONFIG ----------------
-API_KEY = "AIzaSyD7ABmgjhVXghQImkWFzUyGdmrD21Eq_fY"
+API_KEY = os.environ.get("GENAI_API_KEY")
 
 genai.configure(api_key=API_KEY)
 model = genai.GenerativeModel("gemini-2.5-flash")
