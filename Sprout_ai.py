@@ -226,4 +226,4 @@ if st.session_state.is_speaking:
     <div class="ai-human talking">
         <img src="https://media.giphy.com/media/3o7btPCcdNniyf0ArS/giphy.gif" width="130">
     </div>
-    """, unsafe_allow_html=True
+    """, unsafe_allow_html=True)
